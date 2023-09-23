@@ -49,3 +49,6 @@ Thumbs.db
 # git
 frontend/.git
 frontend/.gitignore
+
+# Angular
+frontend/.angular
