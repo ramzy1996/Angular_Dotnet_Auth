@@ -1,41 +1,11 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
-
-interface Country {
-    name: string;
-    flag: string;
-    area: number;
-    population: number;
-}
-
-const COUNTRIES: Country[] = [
-    {
-        name: 'Russia',
-        flag: 'f/f3/Flag_of_Russia.svg',
-        area: 17075200,
-        population: 146989754,
-    },
-    {
-        name: 'Canada',
-        flag: 'c/cf/Flag_of_Canada.svg',
-        area: 9976140,
-        population: 36624199,
-    },
-    {
-        name: 'United States',
-        flag: 'a/a4/Flag_of_the_United_States.svg',
-        area: 9629091,
-        population: 324459463,
-    },
-    {
-        name: 'China',
-        flag: 'f/fa/Flag_of_the_People%27s_Republic_of_China.svg',
-        area: 9596960,
-        population: 1409517397,
-    },
-];
-
+import { AuthService } from 'src/app/services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { Employee } from 'src/app/models/Employee';
+import { Router } from '@angular/router';
+import { StoreService } from 'src/app/services/store.service';
 
 @Component({
     selector: 'app-home',
@@ -43,10 +13,13 @@ const COUNTRIES: Country[] = [
     styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-    countries = COUNTRIES;
+    employees?: Employee[];
     regisetrForm!: FormGroup
     submitted: boolean = false
-    constructor(config: NgbModalConfig, private modalService: NgbModal, private fb: FormBuilder) {
+    email: string = ''
+    password: string = ''
+    role: string = ''
+    constructor(config: NgbModalConfig, private modalService: NgbModal, private fb: FormBuilder, public auth: AuthService, private toaster: ToastrService, private route: Router, private store: StoreService) {
         config.backdrop = 'static';
         config.keyboard = false;
     }
@@ -57,20 +30,66 @@ export class HomeComponent implements OnInit {
             salary: ['', Validators.required],
             joindate: ['', Validators.required],
         })
+        this.fetchEmpList()
+        this.store.getRole().subscribe(data => {
+            let getRoleFromToken = this.auth.getRoleFromToken()
+            this.role = data || getRoleFromToken
+        })
     }
+
     open(content: any) {
         this.modalService.open(content);
     }
-    onSubmit(modal: any) {
+    onSubmit(modal: any, secondModal: any) {
         this.submitted = true
         if (this.regisetrForm.valid) {
             console.log(this.regisetrForm.value)
+            this.auth.register(this.regisetrForm.value).subscribe({
+                next: (res: any) => {
+                    this.toaster.success(res.message)
+                    modal.close('Save click')
+                    this.resetForm()
+                    this.email = res.email
+                    this.password = res.password
+                    this.open(secondModal)
+                    this.fetchEmpList()
+                }, error: (err: any) => {
+                    this.toaster.error(err?.error.message)
+                }
+            })
+
             modal.close('Save click')
             this.resetForm()
         } else {
             console.log('invalid')
         }
     }
+
+    //fetch employye list
+    fetchEmpList() {
+        return this.auth.getList()
+            .subscribe(data => {
+                this.employees = data as Employee[]
+                console.log(data)
+            })
+    }
+
+    // active inactive
+    activeInActive(data: Employee) {
+        this.auth.activate(data.id, !data.isActive).subscribe({
+            next: (res: any) => {
+                this.toaster.success(data.isActive ? 'Employee bloced successfully' : 'Employee unblocked successfully')
+                this.fetchEmpList()
+            }, error: (err: any) => {
+                this.toaster.error(err?.error)
+            }
+        })
+    }
+
+    viewEmployee(id: number) {
+        this.route.navigate([`employee/${id}`])
+    }
+
     resetForm() {
         this.regisetrForm.reset()
         this.submitted = false

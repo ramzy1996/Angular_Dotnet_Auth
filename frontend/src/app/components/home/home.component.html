@@ -1,27 +1,36 @@
-<div class="container">
+<div class="container" *ngIf="role==='Admin'">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Country</th>
-                <th scope="col">Area</th>
-                <th scope="col">Population</th>
+                <th scope="col">FullName</th>
+                <th scope="col">Email</th>
+                <th scope="col">Salary</th>
+                <th scope="col">Join Date</th>
+                <th scope="col">IsActive</th>
                 <th scope="col">
-                    <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Add An Employee</button>
+                    <button class="btn btn-outline-primary" (click)="open(content)">Add</button>
                 </th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let country of countries; index as i">
+            <tr *ngFor="let emp of employees; index as i">
                 <th scope="row">{{ i + 1 }}</th>
+                <td> {{emp.fullName}} </td>
+                <td>{{ emp.email }}</td>
+                <td>{{ emp.salary }}</td>
+                <td>{{ emp.joinDate }}</td>
+                <td>{{ emp.isActive }}</td>
                 <td>
-                    <img [src]="'https://upload.wikimedia.org/wikipedia/commons/' + country.flag" class="me-2"
-                        style="width: 20px" />
-                    {{ country.name }}
+                    <div *ngIf="emp.isActive; then thenBlock else elseBlock"></div>
+                    <ng-template #thenBlock>
+                        <i class="fa-solid fa-lock-open" style="cursor: pointer;" (click)="activeInActive(emp)"></i>
+                    </ng-template>
+                    <ng-template #elseBlock>
+                        <i class="fa-solid fa-lock" style="cursor: pointer;" (click)="activeInActive(emp)"></i>
+                    </ng-template>
+                    <i class="fa-solid fa-bars ms-3" (click)="viewEmployee(emp.id)" style="cursor: pointer;"></i>
                 </td>
-                <td>{{ country.area | number }}</td>
-                <td>{{ country.population | number }}</td>
-                <td></td>
             </tr>
         </tbody>
     </table>
@@ -36,7 +45,7 @@
     <div class="modal-body">
         <form [formGroup]="regisetrForm" [class.submitted]="submitted">
             <div class="mb-3">
-                <label for="name">FullName</label>
+                <label for="name">Full Name</label>
                 <div class="input-group">
                     <input formControlName="fullname" id="name" class="form-control" placeholder="Entre full name"
                         name="name" />
@@ -52,23 +61,37 @@
             <div class="mb-3">
                 <label for="salary">Salary</label>
                 <div class="input-group">
-                    <input formControlName="salary" id="salary" class="form-control" placeholder="Entre salary"
-                        name="salary" />
+                    <input type="number" formControlName="salary" id="salary" class="form-control"
+                        placeholder="Entre salary" name="salary" />
                 </div>
             </div>
             <div class="mb-3">
                 <label for="joindate">Join date</label>
                 <div class="input-group">
-                    <input formControlName="joindate" id="joindate" class="form-control" placeholder="yyyy-mm-dd"
-                        name="joindate" ngbDatepicker #jd="ngbDatepicker" />
-                    <button class="btn btn-outline-secondary" (click)="jd.toggle()" type="button">
-                        <i class="fa-regular fa-calendar-days"></i>
-                    </button>
+                    <input formControlName="joindate" id="joindate" type="date" class="form-control"
+                        placeholder="yyyy-mm-dd" name="joindate">
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="onSubmit(modal)">Save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="onSubmit(modal,content2)">Save</button>
+    </div>
+</ng-template>
+
+<ng-template #content2 let-activeModal>
+    <div class="modal-header">
+        <h4 class="modal-title">Hi there!</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <p>Hello, the email and password will show in this modal popup for the testing. we have to implement the SMTP to
+            send email and password </p>
+        <p>Your email id is : {{email}}</p>
+        <p>Your password is : {{password}}</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
     </div>
 </ng-template>

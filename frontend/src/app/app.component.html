@@ -1,1 +1,8 @@
-<router-outlet></router-outlet>
+<div class="container mt-3">
+    <div style="display: flex; justify-content: end;" *ngIf="auth.isLoggedIn()">
+        <div class="me-5">{{fullname}} </div>
+        <button class="btn btn-danger" (click)="logout()">Logout</button>
+    </div>
+    <br>
+    <router-outlet></router-outlet>
+</div>

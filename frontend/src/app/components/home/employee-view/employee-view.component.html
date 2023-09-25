@@ -1,0 +1,107 @@
+<div class="container mt-5">
+    <h1>Employee Details</h1>
+    <div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>FullName:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.fullName">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Email:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.email">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Join Date:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.joinDate">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>Mobile Number:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.phoneNumber">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Salary:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.salary">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Address:</label>
+                <input type="text" class="form-control" readonly [value]="employeeData.address">
+            </div>
+        </div>
+        <div class="row" *ngIf="role!=='Admin'">
+            <div class="form-group col-md-4">
+                <label>Old Password:</label>
+                <input type="text" class="form-control" readonly>
+            </div>
+            <div class="form-group col-md-4">
+                <label>New Password:</label>
+                <input type="text" class="form-control" readonly>
+            </div>
+            <div class="form-group col-md-3">
+                <button class="btn btn-primary form-control" style="width: 50px;" (click)="SaveSalaryData()">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <h1>Salary Details</h1>
+    <div>
+        <div class="row" *ngFor="let data of employeeData.salaryPayments">
+            <div class="form-group col-md-4">
+                <label>Salary:</label>
+                <input type="text" class="form-control" readonly [value]="data.salary">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Month:</label>
+                <input type="text" class="form-control" readonly [value]="data.month">
+            </div>
+            <div class="form-group col-md-4">
+                <label>Year:</label>
+                <input type="text" class="form-control" readonly [value]="data.year">
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+
+    <div *ngIf="role=='Admin'">
+        <button class="btn btn-outline-primary" (click)="addSalaryData()">Add Salary</button>
+        <br>
+        <br>
+        <div *ngFor="let data of salaryData;let i = index">
+            <form [formGroup]="data" class="mb-4 border p-3 rounded row">
+                <div class="form-group col-md-3">
+                    <label for="salary">Salary:</label>
+                    <input type="text" id="salary" class="form-control" formControlName="salary">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="month">Month:</label>
+                    <select id="month" class="form-control" formControlName="month">
+                        <option disabled selected>Select a month</option>
+                        <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="year">Year:</label>
+                    <input type="text" id="year" class="form-control" formControlName="year">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="remove">Remove</label>
+                    <br>
+                    <button class="btn btn-danger form-control" style="width: 50px;" (click)="removeSalaryData(i)">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="form-group col-md-3" *ngIf="salaryData.length>0">
+            <button class="btn btn-primary form-control" style="width: 50px;" (click)="SaveSalaryData()">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
