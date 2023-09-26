@@ -42,7 +42,7 @@ namespace api.Controllers
             //check employe blocked or unblocked            
             if (checkEmp != null)
             {
-                return BadRequest(new { Message = "User blocked" });
+                return Unauthorized(new { Message = "User blocked" });
             }
             // verify password
             if (!PasswordHash.VerifyPassword(emp.Password, employee.Password))
@@ -51,7 +51,7 @@ namespace api.Controllers
             }
             employee.Token = CreateJwt(employee);
             // Return a success response.
-            return Ok(new { Message = "Login success", Token = employee.Token });
+            return Ok(new { Message = "Login success", Token = employee.Token, Id = employee.Id });
         }
 
         [HttpPost("addemployee")]

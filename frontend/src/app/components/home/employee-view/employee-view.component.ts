@@ -34,6 +34,7 @@ export class EmployeeViewComponent implements OnInit {
             let getRoleFromToken = this.auth.getRoleFromToken()
             this.role = data || getRoleFromToken
         })
+        console.log(this.empId)
     }
     //months
     months: string[] = [

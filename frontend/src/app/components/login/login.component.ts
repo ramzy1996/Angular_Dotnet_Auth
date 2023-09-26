@@ -32,8 +32,10 @@ export class LoginComponent implements OnInit {
                         this.store.setFullname(token.name)
                         this.store.setRole(token.role)
                         this.store.setId(token.id)
+                        this.store.setUserId(res.id)
                         console.log(parseInt(token.id))
-                        token.role == 'Admin' ? this.route.navigate(['home']) : this.route.navigate([`/employee/${parseInt(token.id)}`])
+                        console.log(res.id)
+                        token.role == 'Admin' ? this.route.navigate(['home']) : this.route.navigate([`employee/${parseInt(token.id)}`])
                         // this.route.navigate(['home'])
                     }, error: (err: any) => {
                         console.log(err)

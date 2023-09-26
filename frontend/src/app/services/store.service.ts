@@ -8,6 +8,7 @@ export class StoreService {
     private fullName$ = new BehaviorSubject<string>("")
     private role$ = new BehaviorSubject<string>("")
     private id$ = new BehaviorSubject<string>('')
+    private userid$ = new BehaviorSubject<number>(0)
 
     constructor() { }
 
@@ -29,6 +30,12 @@ export class StoreService {
     }
     public setId(id: string) {
         this.id$.next(id)
+    }
+    public getUserId() {
+        return this.userid$.asObservable();
+    }
+    public setUserId(id: number) {
+        this.userid$.next(id)
     }
 
 }
